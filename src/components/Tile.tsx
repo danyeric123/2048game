@@ -1,11 +1,9 @@
 interface TileProps {
-  value: number
+  value: number;
 }
 
-const Tile = ({value}:TileProps) => {
-  return (
-    <div className={`tile tile-${value}`}>{value}</div>
-  )
-}
+const Tile = ({ value }: TileProps) => {
+  return <div className={`tile tile-${value}`}>{value}</div>;
+};
 
-export default Tile
+export default Tile;

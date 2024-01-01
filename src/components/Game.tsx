@@ -1,139 +1,193 @@
-import { useState, useEffect } from 'react'
-import Board from './Board'
+import { useState, useEffect } from "react";
+import Board from "./Board";
 
 interface GameProps {
-  rows?: number,
-  columns?: number
+  rows?: number;
+  columns?: number;
 }
 
-const Game = ({rows = 4, columns = 4}: GameProps) => {
-
+const Game = ({ rows = 4, columns = 4 }: GameProps) => {
   //create initial board
-  const [board, setBoard] = useState<number[][]>(Array(rows).fill(0).map(() => Array(columns).fill(0)))
-  const [score, setScore] = useState<number>(0)
+  const [board, setBoard] = useState<number[][]>(
+    Array(rows)
+      .fill(0)
+      .map(() => Array(columns).fill(0)),
+  );
+  const [score, setScore] = useState<number>(0);
+  const [gameOver, setGameOver] = useState<boolean>(false);
 
   const initializeBoard = () => {
-    let newBoard = Array(rows).fill(0).map(() => Array(columns).fill(0));
-    newBoard = addTwo(newBoard)
-    newBoard = addTwo(newBoard)
-    setBoard(newBoard)
-  }
+    let newBoard = Array(rows)
+      .fill(0)
+      .map(() => Array(columns).fill(0));
+    newBoard = addTwo(newBoard);
+    newBoard = addTwo(newBoard);
+    setBoard(newBoard);
+  };
+
+  const checkGameOver = () => {
+    //check if any tiles are empty
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < columns; c++) {
+        if (board[r][c] === 0) {
+          setGameOver(false);
+        }
+      }
+    }
+    //check if any tiles are adjacent and equal
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < columns; c++) {
+        if (
+          board[r][c] === board[r][c + 1] ||
+          board[r][c] === board[r + 1][c]
+        ) {
+          setGameOver(false);
+        }
+      }
+    }
+    setGameOver(true);
+  };
 
   // initialize board on first render
   useEffect(() => {
     const moveUp = () => {
-      let newBoard = board.map(row => [...row]);
+      let newBoard = board.map((row) => [...row]);
       for (let c = 0; c < columns; c++) {
-        const slideColumn = [newBoard[0][c], newBoard[1][c], newBoard[2][c], newBoard[3][c]];
-        [newBoard[0][c], newBoard[1][c], newBoard[2][c], newBoard[3][c]] = slide(slideColumn)
+        const slideColumn = [
+          newBoard[0][c],
+          newBoard[1][c],
+          newBoard[2][c],
+          newBoard[3][c],
+        ];
+        [newBoard[0][c], newBoard[1][c], newBoard[2][c], newBoard[3][c]] =
+          slide(slideColumn);
       }
-      newBoard = addTwo(newBoard)
-      setBoard(newBoard)
-    }
+      newBoard = addTwo(newBoard);
+      setBoard(newBoard);
+    };
 
     const moveDown = () => {
-      let newBoard = board.map(row => [...row]);
+      let newBoard = board.map((row) => [...row]);
       for (let c = 0; c < columns; c++) {
-        const slideColumn = [newBoard[3][c], newBoard[2][c], newBoard[1][c], newBoard[0][c]];
-        [newBoard[3][c], newBoard[2][c], newBoard[1][c], newBoard[0][c]] = slide(slideColumn)
+        const slideColumn = [
+          newBoard[3][c],
+          newBoard[2][c],
+          newBoard[1][c],
+          newBoard[0][c],
+        ];
+        [newBoard[3][c], newBoard[2][c], newBoard[1][c], newBoard[0][c]] =
+          slide(slideColumn);
       }
-      newBoard = addTwo(newBoard)
-      setBoard(newBoard)
-    }
-
+      newBoard = addTwo(newBoard);
+      setBoard(newBoard);
+    };
 
     const moveRight = () => {
-      let newBoard = board.map(row => [...row]);
+      let newBoard = board.map((row) => [...row]);
       for (let r = 0; r < rows; r++) {
-        const slideRow = [newBoard[r][0], newBoard[r][1], newBoard[r][2], newBoard[r][3]];
-        [newBoard[r][0], newBoard[r][1], newBoard[r][2], newBoard[r][3]] = slide(slideRow)
+        const slideRow = [
+          newBoard[r][0],
+          newBoard[r][1],
+          newBoard[r][2],
+          newBoard[r][3],
+        ];
+        [newBoard[r][0], newBoard[r][1], newBoard[r][2], newBoard[r][3]] =
+          slide(slideRow);
       }
-      newBoard = addTwo(newBoard)
-      setBoard(newBoard)
-    }
+      newBoard = addTwo(newBoard);
+      setBoard(newBoard);
+    };
 
     const moveLeft = () => {
-      let newBoard = board.map(row => [...row]);
+      let newBoard = board.map((row) => [...row]);
       for (let r = 0; r < rows; r++) {
-        const slideRow = [newBoard[r][3], newBoard[r][2], newBoard[r][1], newBoard[r][0]];
-        [newBoard[r][3], newBoard[r][2], newBoard[r][1], newBoard[r][0]] = slide(slideRow)
-
+        const slideRow = [
+          newBoard[r][3],
+          newBoard[r][2],
+          newBoard[r][1],
+          newBoard[r][0],
+        ];
+        [newBoard[r][3], newBoard[r][2], newBoard[r][1], newBoard[r][0]] =
+          slide(slideRow);
       }
-      newBoard = addTwo(newBoard)
-      setBoard(newBoard)
-    }
-
+      newBoard = addTwo(newBoard);
+      setBoard(newBoard);
+    };
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      e.preventDefault()
-      switch (e.key) {
-        case 'ArrowUp':
-          moveUp()
-          break
-        case 'ArrowDown':
-          moveDown()
-          break
-        case 'ArrowLeft':
-          moveLeft()
-          break
-        case 'ArrowRight':
-          moveRight()
-          break
-        default:
-          break
+      if (gameOver) {
+        return;
       }
-    }
+      e.preventDefault();
+      switch (e.key) {
+        case "ArrowUp":
+          moveUp();
+          break;
+        case "ArrowDown":
+          moveDown();
+          break;
+        case "ArrowLeft":
+          moveLeft();
+          break;
+        case "ArrowRight":
+          moveRight();
+          break;
+        default:
+          break;
+      }
+      checkGameOver();
+    };
 
-    window.addEventListener('keyup', handleKeyUp)
+    window.addEventListener("keyup", handleKeyUp);
 
     return () => {
-      window.removeEventListener('keyup', handleKeyUp)
-    }
-  }, [board])
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [board]);
 
   // Second useEffect for initializing the board state
-useEffect(() => {
-  initializeBoard();
-}, []);
+  useEffect(() => {
+    initializeBoard();
+  }, []);
 
   const addTwo = (board: number[][]): number[][] => {
     //find random row and column to place a 2 in
     const r = Math.floor(Math.random() * rows);
-    const c = Math.floor(Math.random() * columns); 
+    const c = Math.floor(Math.random() * columns);
     //if that spot is empty, place a 2
     if (board[r][c] === 0) {
-      board[r][c] = 2
-      return board
+      board[r][c] = 2;
+      return board;
     } else {
       //otherwise, try again
-      return addTwo(board)
+      return addTwo(board);
     }
-  }
-
+  };
 
   const slide = (row: number[]): number[] => {
     //remove all 0s
-    const filteredRow = row.filter(tile => tile !== 0)
+    const filteredRow = row.filter((tile) => tile !== 0);
     for (let i = 0; i < filteredRow.length; i++) {
       if (filteredRow[i] === filteredRow[i + 1]) {
-        filteredRow[i] = filteredRow[i] * 2
-        filteredRow[i + 1] = 0
-        setScore(score + filteredRow[i])
+        filteredRow[i] = filteredRow[i] * 2;
+        filteredRow[i + 1] = 0;
+        setScore(score + filteredRow[i]);
       }
     }
     //remove all 0s
-    const filteredRow2 = filteredRow.filter(tile => tile !== 0)
+    const filteredRow2 = filteredRow.filter((tile) => tile !== 0);
     //add 0s to the end
     while (filteredRow2.length < rows) {
-      filteredRow2.push(0)
+      filteredRow2.push(0);
     }
-    return filteredRow2
-  }
+    return filteredRow2;
+  };
 
   const newGame = () => {
-    initializeBoard()
-    setScore(0)
-  }
+    initializeBoard();
+    setScore(0);
+    setGameOver(false);
+  };
 
   return (
     <div className="game">
@@ -141,8 +195,16 @@ useEffect(() => {
       <h2>Score: {score}</h2>
       <button onClick={newGame}>New Game</button>
       <Board board={board} />
+      {gameOver ? (
+        <div className="modal">
+          <div className="modal-content">
+            <h1>Game Over</h1>
+            <button onClick={newGame}>Play Again</button>
+          </div>
+        </div>
+      ) : null}
     </div>
-  )
-}
+  );
+};
 
-export default Game
+export default Game;

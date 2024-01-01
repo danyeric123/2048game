@@ -53,23 +53,25 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: transform 0.2s ease-in-out;
 }
 
-.move-up {
-  transform: translateY(-100%);
+.modal {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
 }
 
-.move-down {
-  transform: translateY(100%);
-}
-
-.move-left {
-  transform: translateX(-100%);
-}
-
-.move-right {
-  transform: translateX(100%);
+.modal-content {
+  margin: 38% auto;
+  background-color: #654a4a;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
 }
 
 /* colored tiles */
