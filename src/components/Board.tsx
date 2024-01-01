@@ -13,11 +13,11 @@ const Board = ({ board }: BoardProps) => {
   return (
     <>
       <div className="board">
-        {visualBoard.map((row: number[]) => {
+        {visualBoard.map((row: number[], x) => {
           return (
-            <div className="row">
-              {row.map((tile: number) => {
-                return <Tile value={tile} />;
+            <div key={`row-${x}`} className="row">
+              {row.map((tile: number, y) => {
+                return <Tile key={`${x}-${y}`} value={tile} />;
               })}
             </div>
           );
